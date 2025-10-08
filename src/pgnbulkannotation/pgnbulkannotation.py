@@ -53,9 +53,20 @@ def annotator(
       else:
         typer.echo(f"\nPosition:\n{board}")
         typer.echo(f"Move: {board.san(move)}")
-        note = typer.prompt("Enter annotation")
-        annotations[key] = note
-        node.comment = note
+        raw_input = typer.prompt("Enter annotation", default="", show_default=False).strip()
+
+        if not raw_input:
+          annotation = None
+        elif raw_input.startswith("!"):
+          cmd = raw_input[1:].lower().split()
+
+          if cmd[0] == "skip":
+            typer.echo("Skipping the rest of this game.")
+            break
+        else:
+          annotation = raw_input
+
+        node.comment = annotation
 
       board.push(move)
   
